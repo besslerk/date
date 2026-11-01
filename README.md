@@ -7,7 +7,7 @@ Kleine interaktive Seite (statisch, GitHub Pages).
 2. **Stil** – Low Effort (gesperrt), Princess Treatment, Strong Independent Woman
 3. **Ort** – Mannheim, Pforzheim, Middleground (Karlsruhe/Stuttgart), eigener Vorschlag
 4. **Programmpunkte** – mindestens zwei (aktuell Platzhalter, siehe `PROGRAM` in `app.js`)
-5. **Termin & Unterschrift** → Absenden per Mail
+5. **Termin** → Absenden per Mail
 
 ## Einrichtung
 - **Mail:** In `app.js` oben `CONFIG.formsubmitTarget` setzen (FormSubmit, kein Account).

@@ -10,7 +10,6 @@
   --radius: 10px;
   --serif: "Newsreader", Georgia, "Times New Roman", serif;
   --mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
-  --hand: "Caveat", "Segoe Script", cursive;
 }
 
 * { box-sizing: border-box; }
@@ -89,8 +88,6 @@ textarea { border: 1.5px solid var(--line); border-radius: 6px; padding: 8px 10p
 input[type="text"]:focus { border-bottom-color: var(--accent); }
 textarea:focus { border-color: var(--accent); }
 ::placeholder { color: #a9a191; }
-.signature { font-family: var(--hand); font-size: 34px; line-height: 1.1; color: #1b3a8a; }
-.signature::placeholder { font-family: var(--serif); font-size: 16px; font-style: italic; }
 
 /* buttons */
 .actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 24px; }

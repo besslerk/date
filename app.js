@@ -12,8 +12,8 @@
    "Per Mail senden" bzw. "Kopieren" als Fallback.
    ========================================================= */
 const CONFIG = {
-  formsubmitTarget: "", // z. B. "deine@mail.de" oder "a1b2c3d4e5f6..."
-  fallbackMail: "",     // Adresse für den mailto-Fallback (optional)
+  formsubmitTarget: "kai.bessler@outlook.com", // z. B. "deine@mail.de" oder "a1b2c3d4e5f6..."
+  fallbackMail: "kai.bessler@outlook.com", // Adresse für den mailto-Fallback (optional)
 };
 
 /* =========================================================
@@ -238,7 +238,6 @@ function collect() {
   data["Wann"] = v("#when") || "–";
   data["Getränk"] = v("#drink") || "–";
   data["Anmerkungen"] = v("#notes") || "–";
-  data["Unterschrift"] = v("#signature") || "–";
   data["Einsprüche eingelegt"] = String(objectionCount);
   data["Low Effort angeklickt"] = `${faceIndex}x`;
   return data;
@@ -258,9 +257,6 @@ function renderSummary() {
 }
 
 /* ---------- Unterschrift & Absenden ---------- */
-$("#signature").addEventListener("input", (e) => {
-  $("#submit").disabled = e.target.value.trim().length < 2;
-});
 
 function asText(data) {
   return Object.entries(data).map(([k, v]) => `${k}: ${v}`).join("\n");
