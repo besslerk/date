@@ -25,8 +25,9 @@
 
       <div class="paragraph">
         <h2>Sachverhalt</h2>
-        <p>Gemäß <span class="ref">§ 2 Abs. 3</span> des Ehevertrags ist <em>vor Vertragsschluss</em> ein Kennenlerntreffen bei einem Getränk nach Wahl abzuhalten. Die Kosten trägt die Partei, die zuerst fragt.</p>
+        <p>Gemäß <span class="ref">§ 2 Abs. 3</span> des Ehevertrags ist <em>vor Vertragsschluss</em> ein Kennenlerntreffen abzuhalten. Die Kosten trägt die Partei, die zuerst fragt.</p>
         <p>Partei A fragt hiermit zuerst. Die Kostenfrage ist damit geklärt.</p>
+        <p>Die Verhandlung findet <strong>zwingend in Person</strong> statt. Eine Vertretung, ein Erscheinen per Videocall oder schriftliche Stellungnahmen per Sprachnachricht sind ausgeschlossen.</p>
       </div>
 
       <div class="paragraph">
@@ -38,11 +39,6 @@
           <li>Terminierung</li>
         </ol>
       </div>
-
-      <label class="field">
-        <span class="mono label">Partei B, bitte Namen eintragen</span>
-        <input type="text" id="name" autocomplete="given-name" placeholder="____________________">
-      </label>
 
       <div class="actions">
         <button class="btn ghost" id="objection">Einspruch einlegen</button>
@@ -74,15 +70,16 @@
         <button class="tile" data-style="independent" type="button">
           <span class="tile-emoji">💪</span>
           <span class="tile-title">Strong Independent Woman</span>
-          <span class="tile-text">Wir treffen uns am Ort. Ich hol dich natürlich trotzdem am Bahnhof oder Ähnlichem ab.</span>
+          <span class="tile-text">Wir treffen uns am Ort. Ich hol dich natürlich trotzdem am Bahnhof oder Ähnlichem ab und sorge dafür, dass du danach sicher an deinem Wunschort ankommst.</span>
         </button>
       </div>
 
       <div class="extra" data-extra="princess" hidden>
         <label class="field">
           <span class="mono label">Übermittlung der Blumenwünsche</span>
-          <input type="text" id="flowers" placeholder="z.&nbsp;B. Tulpen, keine Nelken, oder: „überrasch mich“">
+          <input type="text" id="flowers" placeholder="z.&nbsp;B. Tulpen, keine Nelken …">
         </label>
+        <p class="mono fine">Hinweis: Bei „überrasch mich“ kriegst du sprießende Kartoffeln. 🥔</p>
       </div>
       <div class="extra" data-extra="independent" hidden>
         <label class="field">
@@ -106,11 +103,11 @@
       <div class="options" id="locations">
         <label class="option">
           <input type="radio" name="location" value="mannheim">
-          <span><strong>Mannheim</strong><small>Quadrate &amp; Wasserturm</small></span>
+          <span><strong>Mannheim</strong><small>Mein aktueller Wohnsitz</small></span>
         </label>
         <label class="option">
           <input type="radio" name="location" value="pforzheim">
-          <span><strong>Pforzheim</strong><small>Goldstadt</small></span>
+          <span><strong>Pforzheim</strong><small>Dein Wohnsitz?</small></span>
         </label>
         <label class="option">
           <input type="radio" name="location" value="middle">
@@ -168,9 +165,12 @@
       <p class="mono kicker">Punkt 4 der Tagesordnung</p>
       <h1>Terminierung</h1>
 
+      <p class="muted">Folgende Termine stehen zur Auswahl. Alles ankreuzen, was passt.</p>
+      <div class="options multi" id="date-list"></div>
+
       <label class="field">
-        <span class="mono label">Wann passt es dir? (Tage, Zeiträume, Wochenenden …)</span>
-        <input type="text" id="when" placeholder="z.&nbsp;B. Sa 14.11. oder jedes Wochenende im Dezember">
+        <span class="mono label">Andere Terminvorschläge (optional)</span>
+        <input type="text" id="when" placeholder="z.&nbsp;B. jedes Wochenende im Dezember">
       </label>
 
       <label class="field">
@@ -188,10 +188,15 @@
         <dl id="summary"></dl>
       </div>
 
+      <label class="field">
+        <span class="mono label">Telefonnummer (optional)</span>
+        <input type="tel" id="phone" autocomplete="tel" inputmode="tel" placeholder="Für die Rückfrage der Kanzlei">
+      </label>
+
 
       <div class="actions">
         <button class="btn ghost" data-back>Zurück</button>
-        <button class="btn primary" id="submit">Einreichen</button>
+        <button class="btn primary" id="submit" disabled>Einreichen</button>
       </div>
       <p class="mono fine error" id="submit-error" hidden></p>
     </section>
@@ -213,7 +218,6 @@
       </div>
     </section>
 
-    <footer class="sheet-foot mono">Scherzdokument, rechtlich nicht bindend. Das Date schon.</footer>
   </main>
 
   <!-- Modal -->

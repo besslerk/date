@@ -55,6 +55,19 @@ const PROGRAM = {
   ],
 };
 
+/* =========================================================
+   TERMINVORSCHLÄGE
+   ---------------------------------------------------------
+   Platzhalter – später durch echte Termine ersetzen.
+   { id, title, note }
+   ========================================================= */
+const DATES = [
+  { id: "d1", title: "Termin 1 (folgt)", note: "Platzhalter" },
+  { id: "d2", title: "Termin 2 (folgt)", note: "Platzhalter" },
+  { id: "d3", title: "Termin 3 (folgt)", note: "Platzhalter" },
+  { id: "d4", title: "Termin 4 (folgt)", note: "Platzhalter" },
+];
+
 const LABELS = {
   style: {
     princess: "Princess Treatment 💅",
@@ -80,6 +93,7 @@ const state = {
   location: null,
   middle: null,
   program: new Set(),
+  dates: new Set(),
 };
 
 /* ---------- Navigation ---------- */
@@ -228,15 +242,16 @@ function programTitles() {
 function collect() {
   const v = (id) => $(id).value.trim();
   const data = {
-    "Partei B": v("#name") || "(anonym)",
     "Stil": LABELS.style[state.style] ?? "–",
   };
-  if (state.style === "princess") data["Blumenwünsche"] = v("#flowers") || "überrasch mich";
+  if (state.style === "princess") data["Blumenwünsche"] = v("#flowers") || "überrasch mich (→ sprießende Kartoffeln)";
   if (state.style === "independent") data["Abholpunkt"] = v("#pickup") || "–";
   data["Ort"] = locationText();
   data["Programm"] = programTitles().join(" | ");
-  data["Wann"] = v("#when") || "–";
+  data["Termine"] = DATES.filter((d) => state.dates.has(d.id)).map((d) => d.title).join(" | ") || "–";
+  data["Andere Terminvorschläge"] = v("#when") || "–";
   data["Getränk"] = v("#drink") || "–";
+  data["Telefon"] = v("#phone") || "–";
   data["Anmerkungen"] = v("#notes") || "–";
   data["Einsprüche eingelegt"] = String(objectionCount);
   data["Low Effort angeklickt"] = `${faceIndex}x`;
@@ -246,7 +261,7 @@ function renderSummary() {
   const dl = $("#summary");
   dl.innerHTML = "";
   const data = collect();
-  ["Partei B", "Stil", "Blumenwünsche", "Abholpunkt", "Ort", "Programm"].forEach((k) => {
+  ["Stil", "Blumenwünsche", "Abholpunkt", "Ort", "Programm"].forEach((k) => {
     if (!(k in data)) return;
     const dt = document.createElement("dt");
     const dd = document.createElement("dd");
@@ -257,6 +272,25 @@ function renderSummary() {
 }
 
 /* ---------- Unterschrift & Absenden ---------- */
+
+/* ---------- Termine ---------- */
+function updateSubmit() {
+  $("#submit").disabled = state.dates.size === 0 && !$("#when").value.trim();
+}
+DATES.forEach((d) => {
+  const label = document.createElement("label");
+  label.className = "option" + (d.note === "Platzhalter" ? " placeholder" : "");
+  label.innerHTML = `<input type="checkbox"><span><strong></strong><small></small></span>`;
+  label.querySelector("strong").textContent = d.title;
+  label.querySelector("small").textContent = d.note;
+  const cb = label.querySelector("input");
+  cb.addEventListener("change", () => {
+    cb.checked ? state.dates.add(d.id) : state.dates.delete(d.id);
+    updateSubmit();
+  });
+  $("#date-list").appendChild(label);
+});
+$("#when").addEventListener("input", updateSubmit);
 
 function asText(data) {
   return Object.entries(data).map(([k, v]) => `${k}: ${v}`).join("\n");
@@ -277,7 +311,7 @@ $("#submit").addEventListener("click", async () => {
         method: "POST",
         headers: { "Content-Type": "application/json", Accept: "application/json" },
         body: JSON.stringify({
-          _subject: `📜 Az. EV-2026/001 – Antwort von ${data["Partei B"]}`,
+          _subject: "📜 Az. EV-2026/001 – Antwort von Partei B",
           _template: "table",
           _captcha: "false",
           ...data,

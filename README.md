@@ -15,3 +15,4 @@ Kleine interaktive Seite (statisch, GitHub Pages).
   Adresse durch den zufälligen Alias aus der FormSubmit-Mail ersetzen.
 - **Hosting:** Repo → Settings → Pages → Branch wählen, Ordner `/ (root)`.
 - **Datespots:** `PROGRAM` in `app.js` bearbeiten.
+- **Termine:** `DATES` in `app.js` bearbeiten.
