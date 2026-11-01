@@ -1,0 +1,236 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ladung zum Verhandlungstermin</title>
+  <meta name="description" content="Az. EV-2026/001 – Partei A ./. Partei B">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600&family=IBM+Plex+Mono:wght@400;600&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="sheet" id="app">
+    <header class="sheet-head">
+      <span class="mono">Az. EV-2026/001</span>
+      <span class="mono" id="folio">Blatt 1 / 5</span>
+    </header>
+
+    <!-- ============ 0 · INTRO ============ -->
+    <section class="step active" data-step="intro">
+      <p class="mono kicker">Gerichtsstand: Ort des Kennenlernens</p>
+      <h1>Ladung zum Verhandlungs&shy;termin</h1>
+      <p class="lead">in der Sache <strong>Ehevertrag</strong><br>Partei A <span class="muted">./.</span> Partei B</p>
+
+      <div class="paragraph">
+        <h2>Sachverhalt</h2>
+        <p>Gemäß <span class="ref">§ 2 Abs. 3</span> des Ehevertrags ist <em>vor Vertragsschluss</em> ein Kennenlerntreffen bei einem Getränk nach Wahl abzuhalten. Die Kosten trägt die Partei, die zuerst fragt.</p>
+        <p>Partei A fragt hiermit zuerst. Die Kostenfrage ist damit geklärt.</p>
+      </div>
+
+      <div class="paragraph">
+        <h2>Gegenstand der Verhandlung</h2>
+        <ol class="clauses">
+          <li>Festlegung des Stils (Dresscode: selbstbewusst, vgl. <span class="ref">§ 2 Abs. 2</span>)</li>
+          <li>Bestimmung des Verhandlungsortes</li>
+          <li>Auswahl der Programmpunkte</li>
+          <li>Terminierung &amp; Unterzeichnung</li>
+        </ol>
+      </div>
+
+      <label class="field">
+        <span class="mono label">Partei B, bitte Namen eintragen</span>
+        <input type="text" id="name" autocomplete="given-name" placeholder="____________________">
+      </label>
+
+      <div class="actions">
+        <button class="btn ghost" id="objection">Einspruch einlegen</button>
+        <button class="btn primary" data-next>Ladung annehmen</button>
+      </div>
+      <p class="mono fine" id="objection-msg" hidden></p>
+    </section>
+
+    <!-- ============ 1 · STIL ============ -->
+    <section class="step" data-step="style">
+      <p class="mono kicker">Punkt 1 der Tagesordnung</p>
+      <h1>Wähle den Stil</h1>
+      <p class="muted">Bitte genau eine Option ankreuzen.</p>
+
+      <div class="tiles">
+        <button class="tile disabled" data-style="low-effort" type="button">
+          <span class="tile-badge mono">unlock later</span>
+          <span class="tile-emoji">🛋️</span>
+          <span class="tile-title">Low Effort</span>
+          <span class="tile-text">Jogginghose und ein Besuch bei Thalia, dann gemeinsam lesen und anschweigen, zwischendurch Essen bestellen.</span>
+        </button>
+
+        <button class="tile" data-style="princess" type="button">
+          <span class="tile-emoji">💅</span>
+          <span class="tile-title">Princess Treatment</span>
+          <span class="tile-text">Wir machen uns beide chic, ich hol dich ab (nach vorheriger Übermittlung der Blumenwünsche) und sorge dafür, dass du sicher wieder daheim ankommst.</span>
+        </button>
+
+        <button class="tile" data-style="independent" type="button">
+          <span class="tile-emoji">💪</span>
+          <span class="tile-title">Strong Independent Woman</span>
+          <span class="tile-text">Wir treffen uns am Ort. Ich hol dich natürlich trotzdem am Bahnhof oder Ähnlichem ab.</span>
+        </button>
+      </div>
+
+      <div class="extra" data-extra="princess" hidden>
+        <label class="field">
+          <span class="mono label">Übermittlung der Blumenwünsche</span>
+          <input type="text" id="flowers" placeholder="z.&nbsp;B. Tulpen, keine Nelken, oder: „überrasch mich“">
+        </label>
+      </div>
+      <div class="extra" data-extra="independent" hidden>
+        <label class="field">
+          <span class="mono label">Abholpunkt (optional)</span>
+          <input type="text" id="pickup" placeholder="z.&nbsp;B. Hbf, Gleis 7, unter der Uhr">
+        </label>
+      </div>
+
+      <div class="actions">
+        <button class="btn ghost" data-back>Zurück</button>
+        <button class="btn primary" data-next id="style-next" disabled>Weiter</button>
+      </div>
+    </section>
+
+    <!-- ============ 2 · ORT ============ -->
+    <section class="step" data-step="location">
+      <p class="mono kicker">Punkt 2 der Tagesordnung</p>
+      <h1>Verhandlungsort</h1>
+      <p class="muted">Wo soll die Sitzung stattfinden?</p>
+
+      <div class="options" id="locations">
+        <label class="option">
+          <input type="radio" name="location" value="mannheim">
+          <span><strong>Mannheim</strong><small>Quadrate &amp; Wasserturm</small></span>
+        </label>
+        <label class="option">
+          <input type="radio" name="location" value="pforzheim">
+          <span><strong>Pforzheim</strong><small>Goldstadt</small></span>
+        </label>
+        <label class="option">
+          <input type="radio" name="location" value="middle">
+          <span><strong>Neutraler Middleground</strong><small>Karlsruhe oder Stuttgart</small></span>
+        </label>
+        <label class="option">
+          <input type="radio" name="location" value="other">
+          <span><strong>Open for suggestions</strong><small>Gegenvorschlag einreichen</small></span>
+        </label>
+      </div>
+
+      <div class="extra" data-extra="middle" hidden>
+        <div class="segmented">
+          <label><input type="radio" name="middle" value="karlsruhe"><span>Karlsruhe</span></label>
+          <label><input type="radio" name="middle" value="stuttgart"><span>Stuttgart</span></label>
+          <label><input type="radio" name="middle" value="egal"><span>Egal</span></label>
+        </div>
+      </div>
+      <div class="extra" data-extra="other" hidden>
+        <label class="field">
+          <span class="mono label">Gegenvorschlag</span>
+          <input type="text" id="other-location" placeholder="Stadt, Ort, Kontinent …">
+        </label>
+      </div>
+
+      <div class="actions">
+        <button class="btn ghost" data-back>Zurück</button>
+        <button class="btn primary" data-next id="location-next" disabled>Weiter</button>
+      </div>
+    </section>
+
+    <!-- ============ 3 · PROGRAMM ============ -->
+    <section class="step" data-step="program">
+      <p class="mono kicker">Punkt 3 der Tagesordnung</p>
+      <h1>Programmpunkte</h1>
+      <p class="muted">Wähle <strong>mindestens zwei</strong>. <span id="program-city"></span></p>
+
+      <div class="options multi" id="program-list"></div>
+
+      <label class="field">
+        <span class="mono label">Eigener Vorschlag (optional)</span>
+        <input type="text" id="program-own" placeholder="Was fehlt?">
+      </label>
+
+      <p class="mono fine" id="program-count">0 von mind. 2 gewählt</p>
+
+      <div class="actions">
+        <button class="btn ghost" data-back>Zurück</button>
+        <button class="btn primary" data-next id="program-next" disabled>Weiter</button>
+      </div>
+    </section>
+
+    <!-- ============ 4 · TERMIN & UNTERSCHRIFT ============ -->
+    <section class="step" data-step="sign">
+      <p class="mono kicker">Punkt 4 der Tagesordnung</p>
+      <h1>Terminierung &amp; Unterzeichnung</h1>
+
+      <label class="field">
+        <span class="mono label">Wann passt es dir? (Tage, Zeiträume, Wochenenden …)</span>
+        <input type="text" id="when" placeholder="z.&nbsp;B. Sa 14.11. oder jedes Wochenende im Dezember">
+      </label>
+
+      <label class="field">
+        <span class="mono label">Getränk nach Wahl (§ 2 Abs. 3)</span>
+        <input type="text" id="drink" placeholder="Aperol, Kaffee, Leitungswasser mit Haltung …">
+      </label>
+
+      <label class="field">
+        <span class="mono label">Sonstige Anmerkungen zu Protokoll</span>
+        <textarea id="notes" rows="3" placeholder="Allergien, Dealbreaker, Lieblingsessen …"></textarea>
+      </label>
+
+      <div class="paragraph summary">
+        <h2>Protokoll</h2>
+        <dl id="summary"></dl>
+      </div>
+
+      <label class="field">
+        <span class="mono label">Unterschrift Partei B</span>
+        <input type="text" id="signature" class="signature" placeholder="hier unterschreiben" autocomplete="off">
+      </label>
+      <p class="mono fine">Mit der Unterschrift wird der Termin verbindlich. Der Ehevertrag selbst natürlich nicht (siehe Kleingedrucktes).</p>
+
+      <div class="actions">
+        <button class="btn ghost" data-back>Zurück</button>
+        <button class="btn primary" id="submit" disabled>Unterschreiben &amp; einreichen</button>
+      </div>
+      <p class="mono fine error" id="submit-error" hidden></p>
+    </section>
+
+    <!-- ============ 5 · ERGEBNIS ============ -->
+    <section class="step" data-step="done">
+      <div class="stamp" aria-hidden="true">Angenommen</div>
+      <h1>Das Urteil ist verkündet.</h1>
+      <p class="lead">Die Unterlagen sind bei Partei A eingegangen. Partei A meldet sich zeitnah zur Abstimmung der Details.</p>
+      <p class="muted">Bis dahin gilt <span class="ref">§ 2 Abs. 1</span>: weiter slayen.</p>
+
+      <div class="fallback" id="fallback" hidden>
+        <p><strong>Kleiner Formfehler:</strong> Die automatische Zustellung hat nicht geklappt. Bitte schick das Protokoll kurz selbst rüber:</p>
+        <textarea id="fallback-text" rows="8" readonly></textarea>
+        <div class="actions">
+          <button class="btn ghost" id="copy">Kopieren</button>
+          <a class="btn primary" id="mailto" href="#">Per Mail senden</a>
+        </div>
+      </div>
+    </section>
+
+    <footer class="sheet-foot mono">Scherzdokument, rechtlich nicht bindend. Das Date schon.</footer>
+  </main>
+
+  <!-- Modal -->
+  <div class="modal" id="modal" hidden>
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+      <div class="modal-face" id="modal-face">🤨</div>
+      <p class="modal-title" id="modal-title">?</p>
+      <p class="muted" id="modal-text"></p>
+      <button class="btn primary" id="modal-close">Ok …</button>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
