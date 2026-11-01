@@ -47,12 +47,6 @@ const PROGRAM = {
     { id: "s-act-1", title: "Aktivität 1 (folgt)", note: "Platzhalter", kind: "activity" },
     { id: "s-act-2", title: "Aktivität 2 (folgt)", note: "Platzhalter", kind: "activity" },
   ],
-  other: [
-    { id: "o-drinks", title: "Drinks", note: "Getränk nach Wahl, vgl. § 2 Abs. 3", kind: "activity" },
-    { id: "o-food", title: "Essen gehen", note: "Partei A sucht das Restaurant aus (§ 1 Abs. 3)", kind: "activity" },
-    { id: "o-walk", title: "Spaziergang", note: "Platzhalter", kind: "activity" },
-    { id: "o-surprise", title: "Überraschung", note: "Platzhalter", kind: "activity" },
-  ],
 };
 
 /* =========================================================
@@ -191,6 +185,13 @@ function renderProgram() {
     renderedFor = sig;
   }
   $("#program-city").textContent = `Ort: ${locationText()}`;
+  const custom = state.location === "other";
+  $("#program-preset").hidden = custom;
+  $("#program-custom").hidden = !custom;
+  $("#program-verb").textContent = custom ? "Trag" : "Wähle";
+  $("#program-verb").nextElementSibling.nextSibling.textContent = custom ? " ein. " : ". ";
+  state.dealWithIt = false;
+  if (custom) return updateProgramCount();
 
   const list = $("#program-list");
   list.innerHTML = "";
@@ -216,17 +217,41 @@ function renderProgram() {
   });
   updateProgramCount();
 }
+function customValues() {
+  return $$("#custom-fields input").map((i) => i.value.trim()).filter(Boolean);
+}
 function programCount() {
+  if (state.location === "other") return customValues().length;
   return state.program.size + ($("#program-own").value.trim() ? 1 : 0);
 }
+function addCustomField() {
+  const n = $$("#custom-fields input").length + 1;
+  const label = document.createElement("label");
+  label.className = "field";
+  label.innerHTML = `<span class="mono label">Programmpunkt ${n}</span><input type="text">`;
+  const input = label.querySelector("input");
+  input.placeholder = ["z. B. Essen beim Italiener", "z. B. Spaziergang am Rhein", "z. B. Cocktails", "Noch was?"][Math.min(n - 1, 3)];
+  input.addEventListener("input", updateProgramCount);
+  $("#custom-fields").appendChild(label);
+  return input;
+}
+for (let i = 0; i < 3; i++) addCustomField();
+$("#add-field").addEventListener("click", () => addCustomField().focus());
+$("#deal").addEventListener("click", () => {
+  state.dealWithIt = true;
+  go(state.step + 1);
+});
 function updateProgramCount() {
   const n = programCount();
-  $("#program-count").textContent = `${n} von mind. 2 gewählt`;
+  $("#program-count").textContent = `${n} von mind. 2 ${state.location === "other" ? "eingetragen" : "gewählt"}`;
   $("#program-next").disabled = n < 2;
 }
 $("#program-own").addEventListener("input", updateProgramCount);
 
 function programTitles() {
+  if (state.location === "other") {
+    return state.dealWithIt ? ["Planung ist deine Sache, deal with it 😎"] : customValues();
+  }
   const all = Object.entries(PROGRAM).flatMap(([city, items]) =>
     items.map((i) => ({ ...i, city }))
   );
@@ -245,7 +270,7 @@ function collect() {
     "Stil": LABELS.style[state.style] ?? "–",
   };
   if (state.style === "princess") data["Blumenwünsche"] = v("#flowers") || "überrasch mich (→ sprießende Kartoffeln)";
-  if (state.style === "independent") data["Abholpunkt"] = v("#pickup") || "–";
+  if (state.style === "independent") data["Treffpunkt"] = v("#pickup") || "–";
   data["Ort"] = locationText();
   data["Programm"] = programTitles().join(" | ");
   data["Termine"] = DATES.filter((d) => state.dates.has(d.id)).map((d) => d.title).join(" | ") || "–";
@@ -261,7 +286,7 @@ function renderSummary() {
   const dl = $("#summary");
   dl.innerHTML = "";
   const data = collect();
-  ["Stil", "Blumenwünsche", "Abholpunkt", "Ort", "Programm"].forEach((k) => {
+  ["Stil", "Blumenwünsche", "Treffpunkt", "Ort", "Programm"].forEach((k) => {
     if (!(k in data)) return;
     const dt = document.createElement("dt");
     const dd = document.createElement("dd");

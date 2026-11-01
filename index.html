@@ -83,7 +83,7 @@
       </div>
       <div class="extra" data-extra="independent" hidden>
         <label class="field">
-          <span class="mono label">Abholpunkt (optional)</span>
+          <span class="mono label">Treffpunkt (optional)</span>
           <input type="text" id="pickup" placeholder="z.&nbsp;B. Hbf, Gleis 7, unter der Uhr">
         </label>
       </div>
@@ -143,14 +143,23 @@
     <section class="step" data-step="program">
       <p class="mono kicker">Punkt 3 der Tagesordnung</p>
       <h1>Programmpunkte</h1>
-      <p class="muted">Wähle <strong>mindestens zwei</strong>. <span id="program-city"></span></p>
+      <p class="muted"><span id="program-verb">Wähle</span> <strong>mindestens zwei</strong>. <span id="program-city"></span></p>
 
-      <div class="options multi" id="program-list"></div>
+      <div id="program-preset">
+        <div class="options multi" id="program-list"></div>
 
-      <label class="field">
-        <span class="mono label">Eigener Vorschlag (optional)</span>
-        <input type="text" id="program-own" placeholder="Was fehlt?">
-      </label>
+        <label class="field">
+          <span class="mono label">Eigener Vorschlag (optional)</span>
+          <input type="text" id="program-own" placeholder="Was fehlt?">
+        </label>
+      </div>
+
+      <div id="program-custom" hidden>
+        <button class="btn primary deal" type="button" id="deal">Planung ist deine Sache, deal with it 😎</button>
+        <p class="mono fine or">oder selbst Vorschläge eintragen:</p>
+        <div id="custom-fields"></div>
+        <button class="btn ghost small" type="button" id="add-field">+ Weiteres Feld</button>
+      </div>
 
       <p class="mono fine" id="program-count">0 von mind. 2 gewählt</p>
 
