@@ -208,10 +208,8 @@ const PROGRAM = {
    { id, title, note }
    ========================================================= */
 const DATES = [
-  { id: "d1", title: "Termin 1 (folgt)", note: "Platzhalter" },
-  { id: "d2", title: "Termin 2 (folgt)", note: "Platzhalter" },
-  { id: "d3", title: "Termin 3 (folgt)", note: "Platzhalter" },
-  { id: "d4", title: "Termin 4 (folgt)", note: "Platzhalter" },
+  { id: "d1", title: "Donnerstag, 5.11.", note: "Uhrzeit nach Absprache" },
+  { id: "d2", title: "Freitag, 6.11.", note: "Uhrzeit nach Absprache" },
 ];
 
 const LABELS = {
@@ -277,11 +275,18 @@ $("#objection").addEventListener("click", (e) => {
 /* ---------- Modal ---------- */
 const faces = ["🤨", "😵‍💫", "🧐", "🫠"];
 let faceIndex = 0;
-function openModal() {
-  $("#modal-face").textContent = faces[faceIndex++ % faces.length];
+function openModal(face, title = "?", text = "") {
+  $("#modal-face").textContent = face || faces[faceIndex++ % faces.length];
+  $("#modal-title").textContent = title;
+  $("#modal-title").classList.toggle("small", title !== "?");
+  $("#modal-text").textContent = text;
   $("#modal").hidden = false;
   $("#modal-close").focus();
 }
+$("#future").addEventListener("click", () => {
+  state.futureClicks = (state.futureClicks || 0) + 1;
+  openModal("⏳", "Geduld.", "Erst das Kennenlernen, dann die Routine.");
+});
 function closeModal() { $("#modal").hidden = true; }
 $("#modal-close").addEventListener("click", closeModal);
 $("#modal").addEventListener("click", (e) => { if (e.target.id === "modal") closeModal(); });
@@ -491,11 +496,11 @@ function collect() {
   data["Programm"] = programTitles().join(" | ");
   data["Termine"] = DATES.filter((d) => state.dates.has(d.id)).map((d) => d.title).join(" | ") || "–";
   data["Andere Terminvorschläge"] = v("#when") || "–";
-  data["Getränk"] = v("#drink") || "–";
   data["Telefon"] = v("#phone") || "–";
   data["Anmerkungen"] = v("#notes") || "–";
   data["Einsprüche eingelegt"] = String(objectionCount);
   data["Low Effort angeklickt"] = `${faceIndex}x`;
+  data["Datenight-Feature angeklickt"] = `${state.futureClicks || 0}x`;
   return data;
 }
 function renderSummary() {

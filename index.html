@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=13">
+  <link rel="stylesheet" href="style.css?v=14">
 </head>
 <body>
   <main class="sheet" id="app">
@@ -166,18 +166,20 @@
       <p class="mono kicker">Punkt 4 der Tagesordnung</p>
       <h1>Terminierung</h1>
 
-      <p class="muted">Folgende Termine stehen zur Auswahl. Alles ankreuzen, was passt.</p>
+      <p class="muted">Folgende Termine stehen zur Auswahl. Länger als das will ich eigentlich nicht warten, dich kennenzulernen. Alles ankreuzen, was passt.</p>
       <div class="options multi" id="date-list"></div>
+      <p class="mono fine">Die Abstimmung der genauen Uhrzeit erfolgt im Dialog.</p>
 
       <label class="field">
         <span class="mono label">Andere Terminvorschläge (optional)</span>
         <input type="text" id="when" placeholder="z.&nbsp;B. jedes Wochenende im Dezember">
       </label>
 
-      <label class="field">
-        <span class="mono label">Getränk nach Wahl (§ 2 Abs. 3)</span>
-        <input type="text" id="drink" placeholder="Aperol, Kaffee, Leitungswasser mit Haltung …">
-      </label>
+      <button class="future" type="button" id="future">
+        <span class="tile-badge mono">Future Feature</span>
+        <span class="future-icon">🔒</span>
+        <span><strong>Regelmäßige Datenight einstellen</strong><small>Wird nach erfolgreichem Ersttermin freigeschaltet.</small></span>
+      </button>
 
       <label class="field">
         <span class="mono label">Sonstige Anmerkungen zu Protokoll</span>
@@ -231,6 +233,6 @@
     </div>
   </div>
 
-  <script src="app.js?v=13"></script>
+  <script src="app.js?v=14"></script>
 </body>
 </html>
