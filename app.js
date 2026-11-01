@@ -175,8 +175,7 @@ const PROGRAM = {
       where: "Stuttgart",
       steps: [
         { text: "Naturkundemuseum am Löwentor, weil ich Dinos mag 🦕" },
-        { text: "Danach Dinner" },
-        { text: "Anschließend findet sich ein gemütlicher Spot in der Stadt" },
+        { text: "Anschließend findet sich ein gemütlicher Spot in der Stadt für Dinner" },
       ],
       choices: [
         {
