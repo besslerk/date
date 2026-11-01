@@ -36,23 +36,20 @@ const CONFIG = {
      ],
    }
 
-   Aktuell Platzhalter (placeholder()) – einfach durch echte
-   Objekte im Format oben ersetzen.
+   placeholder(id, titel, tag) erzeugt eine "folgt"-Karte –
+   einfach durch ein echtes Objekt im Format oben ersetzen.
    ========================================================= */
 const MIN_DATE_PICKS = 1; // wie viele Vorschläge sie mindestens ankreuzen muss
 
-function placeholder(prefix) {
-  return [1, 2, 3].map((n) => ({
-    id: `${prefix}-${n}`,
-    title: `Datevorschlag ${n} (folgt)`,
+function placeholder(id, title, tag) {
+  return {
+    id,
+    title: `${title} (folgt)`,
+    tag,
     teaser: "Platzhalter",
     placeholder: true,
-    steps: [
-      { time: "--:--", text: "Ablaufpunkt 1" },
-      { time: "--:--", text: "Ablaufpunkt 2" },
-      { time: "--:--", text: "Ablaufpunkt 3" },
-    ],
-  }));
+    steps: [{ text: "Ablauf folgt" }],
+  };
 }
 
 const PROGRAM = {
@@ -113,9 +110,97 @@ const PROGRAM = {
       ],
     },
   ],
-  pforzheim: placeholder("pf"),
-  karlsruhe: placeholder("ka"),
-  stuttgart: placeholder("s"),
+  pforzheim: [
+    {
+      id: "pf-flucht",
+      title: "Flüchten",
+      teaser: "Wir entscheiden uns gegen Pforzheim und gehen irgendwo hin. Hauptsache nicht Pforzheim.",
+      steps: [
+        { text: "Treffen in Pforzheim" },
+        { text: "Zügiges Verlassen von Pforzheim" },
+        { text: "Programm wird on the go erstellt (ich weiß, das ist langweilig, aber Pforzheim isses einfach nicht)" },
+      ],
+    },
+    {
+      id: "pf-wildpark",
+      title: "Wildpark into Seehaus",
+      steps: [
+        { text: "Schlendern durch den Wildpark" },
+        { text: "Auf die süßen Wildkatzen (alternativ die Otter) zeigen und „du“ sagen" },
+        { text: "Abendessen im Seehaus" },
+        { text: "(Optional) An der Hochschule kurz einem gewissen Professor ans Büro pinkeln" },
+      ],
+    },
+    placeholder("pf-classic", "Classic", "Chef's Choice"),
+  ],
+  karlsruhe: [
+    {
+      id: "ka-classic",
+      title: "Classic",
+      tag: "Chef's Choice",
+      steps: [
+        { text: "Schlendern durch die Stadt, ggf. ein wenig Shopping" },
+        { text: "Stop bei Thalia für ein Buch (Liebe geht durch das Hardcover)" },
+        { text: "Danach aufwärmen im Thalia-Café oder Dinner" },
+      ],
+      choices: [
+        {
+          id: "dinner",
+          label: "Aufwärmen / Dinner",
+          options: ["Thalia-Café", "Dinner"],
+          other: "Kulinarische Richtung …",
+        },
+      ],
+    },
+    {
+      id: "ka-park",
+      title: "Park",
+      teaser: "Abhängig vom Wetter",
+      steps: [
+        { text: "Schlendern durch den Schlosspark" },
+        { text: "Bei gutem Wetter ein kleines Picknick" },
+        { text: "Anschließend findet sich ein gemütlicher Spot in der Stadt" },
+      ],
+    },
+    placeholder("ka-3", "Datevorschlag 3"),
+  ],
+  stuttgart: [
+    {
+      id: "s-classic",
+      title: "Classic",
+      tag: "Chef's Choice",
+      steps: [
+        { text: "Shopping auf der Königstraße" },
+        { text: "Stop bei Thalia für ein Buch (Liebe geht durch das Hardcover)" },
+        { text: "Danach aufwärmen im Thalia-Café oder Dinner" },
+      ],
+      choices: [
+        {
+          id: "dinner",
+          label: "Aufwärmen / Dinner",
+          options: ["Thalia-Café", "Dinner"],
+          other: "Kulinarische Richtung …",
+        },
+      ],
+    },
+    {
+      id: "s-dino",
+      title: "Dinos & Dinner",
+      steps: [
+        { text: "Naturkundemuseum am Löwentor, weil ich Dinos mag 🦕" },
+        { text: "Danach Dinner" },
+        { text: "Anschließend findet sich ein gemütlicher Spot in der Stadt" },
+      ],
+      choices: [
+        {
+          id: "dinner",
+          label: "Dinner",
+          other: "Kulinarische Richtung …",
+        },
+      ],
+    },
+    placeholder("s-3", "Datevorschlag 3"),
+  ],
 };
 
 /* =========================================================
