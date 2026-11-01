@@ -16,3 +16,4 @@ Kleine interaktive Seite (statisch, GitHub Pages).
 - **Hosting:** Repo → Settings → Pages → Branch wählen, Ordner `/ (root)`.
 - **Datevorschläge:** `PROGRAM` in `app.js` bearbeiten (Format steht im Kommentar).
 - **Termine:** `DATES` in `app.js` bearbeiten.
+- **Cache:** Nach Änderungen an `app.js`/`style.css` die Versionsnummer `?v=…` in `index.html` erhöhen, sonst zeigen Browser bis zu 10 Minuten die alte Version.
