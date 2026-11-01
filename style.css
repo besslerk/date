@@ -265,3 +265,13 @@ textarea:focus { border-color: var(--accent); }
 .btn.small { padding: 8px 14px; font-size: 13px; }
 .or { text-align: center; margin: 14px 0 0; }
 #custom-fields .field { margin: 12px 0; }
+
+/* proposals */
+.options.proposals { grid-template-columns: 1fr; }
+.proposal .city { font-style: normal; font-size: 11px; text-transform: uppercase; color: var(--accent); letter-spacing: .06em; }
+.proposal strong { font-size: 19px; }
+.timeline { list-style: none; margin: 10px 0 2px; padding: 0 0 0 2px; border-left: 1.5px solid var(--line); }
+.timeline li { position: relative; display: grid; grid-template-columns: 56px 1fr; gap: 8px; padding: 3px 0 3px 14px; font-size: 15px; }
+.timeline li::before { content: ""; position: absolute; left: -5px; top: 11px; width: 8px; height: 8px; border-radius: 50%; background: var(--paper); border: 1.5px solid var(--muted); }
+.timeline .time { font-size: 12px; color: var(--muted); padding-top: 2px; }
+.proposal input:checked + span .timeline li::before { border-color: var(--accent); background: var(--accent-soft); }

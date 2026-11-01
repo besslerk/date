@@ -17,36 +17,45 @@ const CONFIG = {
 };
 
 /* =========================================================
-   DATESPOTS & AKTIVITÄTEN PRO ORT
+   DATEVORSCHLÄGE PRO ORT
    ---------------------------------------------------------
-   Platzhalter – später einfach ersetzen/ergänzen.
-   { id, title, note, kind: "spot" | "activity" }
+   Pro Stadt 3 Vorschläge, jeweils mit Ablauf. Format:
+
+   {
+     id: "ma-1",                      // eindeutig
+     title: "Kunst & Pasta",          // Name des Vorschlags
+     teaser: "Kurze Beschreibung",    // optional
+     steps: [                         // der Ablauf
+       { time: "17:00", text: "Kunsthalle" },
+       { time: "19:00", text: "Essen bei …" },
+       { time: "21:00", text: "Drinks bei …" },
+     ],
+   }
+
+   Aktuell Platzhalter (placeholder()) – einfach durch echte
+   Objekte im Format oben ersetzen.
    ========================================================= */
+const MIN_DATE_PICKS = 1; // wie viele Vorschläge sie mindestens ankreuzen muss
+
+function placeholder(prefix) {
+  return [1, 2, 3].map((n) => ({
+    id: `${prefix}-${n}`,
+    title: `Datevorschlag ${n} (folgt)`,
+    teaser: "Platzhalter",
+    placeholder: true,
+    steps: [
+      { time: "--:--", text: "Ablaufpunkt 1" },
+      { time: "--:--", text: "Ablaufpunkt 2" },
+      { time: "--:--", text: "Ablaufpunkt 3" },
+    ],
+  }));
+}
+
 const PROGRAM = {
-  mannheim: [
-    { id: "ma-spot-1", title: "Datespot 1 (folgt)", note: "Platzhalter", kind: "spot" },
-    { id: "ma-spot-2", title: "Datespot 2 (folgt)", note: "Platzhalter", kind: "spot" },
-    { id: "ma-act-1", title: "Aktivität 1 (folgt)", note: "Platzhalter", kind: "activity" },
-    { id: "ma-act-2", title: "Aktivität 2 (folgt)", note: "Platzhalter", kind: "activity" },
-  ],
-  pforzheim: [
-    { id: "pf-spot-1", title: "Datespot 1 (folgt)", note: "Platzhalter", kind: "spot" },
-    { id: "pf-spot-2", title: "Datespot 2 (folgt)", note: "Platzhalter", kind: "spot" },
-    { id: "pf-act-1", title: "Aktivität 1 (folgt)", note: "Platzhalter", kind: "activity" },
-    { id: "pf-act-2", title: "Aktivität 2 (folgt)", note: "Platzhalter", kind: "activity" },
-  ],
-  karlsruhe: [
-    { id: "ka-spot-1", title: "Datespot 1 (folgt)", note: "Platzhalter", kind: "spot" },
-    { id: "ka-spot-2", title: "Datespot 2 (folgt)", note: "Platzhalter", kind: "spot" },
-    { id: "ka-act-1", title: "Aktivität 1 (folgt)", note: "Platzhalter", kind: "activity" },
-    { id: "ka-act-2", title: "Aktivität 2 (folgt)", note: "Platzhalter", kind: "activity" },
-  ],
-  stuttgart: [
-    { id: "s-spot-1", title: "Datespot 1 (folgt)", note: "Platzhalter", kind: "spot" },
-    { id: "s-spot-2", title: "Datespot 2 (folgt)", note: "Platzhalter", kind: "spot" },
-    { id: "s-act-1", title: "Aktivität 1 (folgt)", note: "Platzhalter", kind: "activity" },
-    { id: "s-act-2", title: "Aktivität 2 (folgt)", note: "Platzhalter", kind: "activity" },
-  ],
+  mannheim: placeholder("ma"),
+  pforzheim: placeholder("pf"),
+  karlsruhe: placeholder("ka"),
+  stuttgart: placeholder("s"),
 };
 
 /* =========================================================
@@ -184,12 +193,14 @@ function renderProgram() {
     state.program.clear();
     renderedFor = sig;
   }
-  $("#program-city").textContent = `Ort: ${locationText()}`;
   const custom = state.location === "other";
+  const min = custom ? 2 : MIN_DATE_PICKS;
+  $("#program-title").textContent = custom ? "Programmpunkte" : "Datevorschläge";
+  $("#program-hint").textContent = custom
+    ? `Trag mindestens zwei ein. Ort: ${locationText()}`
+    : `Kreuz an, was dir gefällt (mindestens ${min === 1 ? "einer" : min}). Ort: ${locationText()}`;
   $("#program-preset").hidden = custom;
   $("#program-custom").hidden = !custom;
-  $("#program-verb").textContent = custom ? "Trag" : "Wähle";
-  $("#program-verb").nextElementSibling.nextSibling.textContent = custom ? " ein. " : ". ";
   state.dealWithIt = false;
   if (custom) return updateProgramCount();
 
@@ -198,14 +209,25 @@ function renderProgram() {
   keys.forEach((key) => {
     (PROGRAM[key] || []).forEach((item) => {
       const label = document.createElement("label");
-      label.className = "option" + (item.note === "Platzhalter" ? " placeholder" : "");
-      const prefix = keys.length > 1 ? `${LABELS.location[key]} · ` : "";
+      label.className = "option proposal" + (item.placeholder ? " placeholder" : "");
       label.innerHTML = `
-        <input type="checkbox" value="${item.id}">
-        <span><strong></strong><small></small></span>`;
-      label.querySelector("strong").textContent = prefix + item.title;
-      label.querySelector("small").textContent =
-        (item.kind === "spot" ? "Spot" : "Aktivität") + " · " + item.note;
+        <input type="checkbox">
+        <span><em class="mono city"></em><strong></strong><small></small><ol class="timeline"></ol></span>`;
+      const city = label.querySelector(".city");
+      if (keys.length > 1) city.textContent = LABELS.location[key];
+      else city.remove();
+      label.querySelector("strong").textContent = item.title;
+      const teaser = label.querySelector("small");
+      if (item.teaser) teaser.textContent = item.teaser;
+      else teaser.remove();
+      const ol = label.querySelector("ol");
+      (item.steps || []).forEach((st) => {
+        const li = document.createElement("li");
+        li.innerHTML = `<span class="mono time"></span><span></span>`;
+        li.firstChild.textContent = st.time || "";
+        li.lastChild.textContent = st.text;
+        ol.appendChild(li);
+      });
       const cb = label.querySelector("input");
       cb.checked = state.program.has(item.id);
       cb.addEventListener("change", () => {
@@ -243,8 +265,10 @@ $("#deal").addEventListener("click", () => {
 });
 function updateProgramCount() {
   const n = programCount();
-  $("#program-count").textContent = `${n} von mind. 2 ${state.location === "other" ? "eingetragen" : "gewählt"}`;
-  $("#program-next").disabled = n < 2;
+  const custom = state.location === "other";
+  const min = custom ? 2 : MIN_DATE_PICKS;
+  $("#program-count").textContent = `${n} von mind. ${min} ${custom ? "eingetragen" : "gewählt"}`;
+  $("#program-next").disabled = n < min;
 }
 $("#program-own").addEventListener("input", updateProgramCount);
 

@@ -35,7 +35,7 @@
         <ol class="clauses">
           <li>Festlegung des Stils (Dresscode: slay)</li>
           <li>Bestimmung des Verhandlungsortes</li>
-          <li>Auswahl der Programmpunkte</li>
+          <li>Auswahl des Datevorschlags</li>
           <li>Terminierung</li>
         </ol>
       </div>
@@ -142,14 +142,14 @@
     <!-- ============ 3 · PROGRAMM ============ -->
     <section class="step" data-step="program">
       <p class="mono kicker">Punkt 3 der Tagesordnung</p>
-      <h1>Programmpunkte</h1>
-      <p class="muted"><span id="program-verb">Wähle</span> <strong>mindestens zwei</strong>. <span id="program-city"></span></p>
+      <h1 id="program-title">Datevorschläge</h1>
+      <p class="muted" id="program-hint"></p>
 
       <div id="program-preset">
-        <div class="options multi" id="program-list"></div>
+        <div class="options multi proposals" id="program-list"></div>
 
         <label class="field">
-          <span class="mono label">Eigener Vorschlag (optional)</span>
+          <span class="mono label">Eigene Idee / Änderungswunsch (optional)</span>
           <input type="text" id="program-own" placeholder="Was fehlt?">
         </label>
       </div>
