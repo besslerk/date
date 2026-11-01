@@ -95,8 +95,8 @@ const PROGRAM = {
       title: "Cozy",
       tag: "Ideal für ein Follow-up-Date",
       steps: [
-        { text: "Vorab-Lektüre: „Sunrise on the Reaping“ (dt. „Der Tag bricht an“), Sprache nach Wahl, wird rechtzeitig bereitgestellt" },
-        { text: "Der neue Tribute-von-Panem-Film im Kino" },
+        { text: "Vorab-Lektüre: das Buch „Sunrise on the Reaping“ (Sprache nach Wahl), wird rechtzeitig bereitgestellt" },
+        { text: "Dann die Verfilmung im Kino: „Sunrise on the Reaping“, der neue Tribute-von-Panem-Film" },
         { text: "Gemeinsam kochen (Gericht nach Wahl) oder Essen bestellen" },
         { text: "Dabei: Analyse der Unterschiede zwischen Buch und Film" },
       ],
