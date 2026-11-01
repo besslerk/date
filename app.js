@@ -133,17 +133,23 @@ const PROGRAM = {
     },
     placeholder("pf-classic", "Classic", "Chef's Choice"),
   ],
-  karlsruhe: [
+  middle: [
     {
-      id: "ka-classic",
+      id: "mid-classic",
       title: "Classic",
+      where: "Karlsruhe oder Stuttgart",
       tag: "Chef's Choice",
       steps: [
-        { text: "Schlendern durch die Stadt, ggf. ein wenig Shopping" },
+        { text: "Schlendern durch die Stadt bzw. Shopping auf der Königstraße (Stuttgart)" },
         { text: "Stop bei Thalia für ein Buch (Liebe geht durch das Hardcover)" },
         { text: "Danach aufwärmen im Thalia-Café oder Dinner" },
       ],
       choices: [
+        {
+          id: "city",
+          label: "Stadt",
+          options: ["Karlsruhe", "Stuttgart", "Egal"],
+        },
         {
           id: "dinner",
           label: "Aufwärmen / Dinner",
@@ -153,8 +159,9 @@ const PROGRAM = {
       ],
     },
     {
-      id: "ka-park",
+      id: "mid-park",
       title: "Park",
+      where: "Karlsruhe",
       teaser: "Abhängig vom Wetter",
       steps: [
         { text: "Schlendern durch den Schlosspark" },
@@ -162,30 +169,10 @@ const PROGRAM = {
         { text: "Anschließend findet sich ein gemütlicher Spot in der Stadt" },
       ],
     },
-    placeholder("ka-3", "Datevorschlag 3"),
-  ],
-  stuttgart: [
     {
-      id: "s-classic",
-      title: "Classic",
-      tag: "Chef's Choice",
-      steps: [
-        { text: "Shopping auf der Königstraße" },
-        { text: "Stop bei Thalia für ein Buch (Liebe geht durch das Hardcover)" },
-        { text: "Danach aufwärmen im Thalia-Café oder Dinner" },
-      ],
-      choices: [
-        {
-          id: "dinner",
-          label: "Aufwärmen / Dinner",
-          options: ["Thalia-Café", "Dinner"],
-          other: "Kulinarische Richtung …",
-        },
-      ],
-    },
-    {
-      id: "s-dino",
+      id: "mid-dino",
       title: "Dinos & Dinner",
+      where: "Stuttgart",
       steps: [
         { text: "Naturkundemuseum am Löwentor, weil ich Dinos mag 🦕" },
         { text: "Danach Dinner" },
@@ -199,7 +186,6 @@ const PROGRAM = {
         },
       ],
     },
-    placeholder("s-3", "Datevorschlag 3"),
   ],
 };
 
@@ -224,8 +210,7 @@ const LABELS = {
   location: {
     mannheim: "Mannheim",
     pforzheim: "Pforzheim",
-    karlsruhe: "Karlsruhe",
-    stuttgart: "Stuttgart",
+    middle: "Karlsruhe / Stuttgart",
   },
 };
 
@@ -239,7 +224,6 @@ const state = {
   step: 0,
   style: null,
   location: null,
-  middle: null,
   program: new Set(),
   choices: {},
   dates: new Set(),
@@ -306,27 +290,19 @@ $$(".tile").forEach((tile) => {
 function updateLocation() {
   const loc = $('input[name="location"]:checked')?.value ?? null;
   state.location = loc;
-  state.middle = $('input[name="middle"]:checked')?.value ?? null;
   $$('[data-step="location"] .extra').forEach((x) => (x.hidden = x.dataset.extra !== loc));
   let ok = !!loc;
-  if (loc === "middle") ok = !!state.middle;
   if (loc === "other") ok = $("#other-location").value.trim().length > 0;
   $("#location-next").disabled = !ok;
 }
-$$('input[name="location"], input[name="middle"]').forEach((i) => i.addEventListener("change", updateLocation));
+$$('input[name="location"]').forEach((i) => i.addEventListener("change", updateLocation));
 $("#other-location").addEventListener("input", updateLocation);
 
 function cityKeys() {
-  if (state.location === "middle") {
-    return state.middle === "egal" ? ["karlsruhe", "stuttgart"] : [state.middle];
-  }
   return [state.location];
 }
 function locationText() {
   if (state.location === "other") return `Vorschlag: ${$("#other-location").value.trim()}`;
-  if (state.location === "middle") {
-    return state.middle === "egal" ? "Karlsruhe oder Stuttgart (egal)" : LABELS.location[state.middle];
-  }
   return LABELS.location[state.location] ?? "–";
 }
 
@@ -352,12 +328,12 @@ function renderProgram() {
   const list = $("#program-list");
   list.innerHTML = "";
   keys.forEach((key) => {
-    (PROGRAM[key] || []).forEach((item) => list.appendChild(renderProposal(item, keys.length > 1 ? key : null)));
+    (PROGRAM[key] || []).forEach((item) => list.appendChild(renderProposal(item)));
   });
   updateProgramCount();
 }
 
-function renderProposal(item, cityKey) {
+function renderProposal(item) {
   const wrap = document.createElement("div");
   wrap.className = "proposal-wrap";
   const label = document.createElement("label");
@@ -369,7 +345,7 @@ function renderProposal(item, cityKey) {
     const el = label.querySelector(sel);
     text ? (el.textContent = text) : el.remove();
   };
-  fill(".city", cityKey && LABELS.location[cityKey]);
+  fill(".city", item.where);
   fill("strong", item.title);
   fill(".tag", item.tag);
   fill("small", item.teaser);
@@ -474,7 +450,7 @@ function programTitles() {
     items
       .filter((i) => state.program.has(i.id))
       .map((i) => {
-        let t = `${i.title} (${LABELS.location[city]})`;
+        let t = `${i.title} (${i.where || LABELS.location[city]})`;
         const extras = (i.choices || [])
           .map((c) => {
             const v = state.choices[i.id]?.[c.id] || {};
