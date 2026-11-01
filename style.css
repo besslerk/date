@@ -66,8 +66,8 @@ h2 { font-family: var(--mono); font-size: 12px; text-transform: uppercase; lette
 .clauses li { margin: 2px 0; }
 
 /* steps */
-.step { display: none; animation: in .35s ease both; }
-.step.active { display: block; }
+.step, .aside { display: none; animation: in .35s ease both; }
+.step.active, .aside.active { display: block; }
 @keyframes in { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
 
 /* form */
@@ -298,16 +298,12 @@ textarea:focus { border-color: var(--accent); }
 .proposal-wrap .option > span { min-height: 0; }
 .choices[hidden] { display: none; }
 
-/* future feature */
-.future {
-  position: relative; width: 100%; margin: 8px 0 18px;
-  display: flex; align-items: center; gap: 14px; text-align: left;
-  font: inherit; color: var(--muted);
-  background: var(--paper-2); border: 1.5px dashed var(--line); border-radius: var(--radius);
-  padding: 16px; cursor: pointer;
-}
-.future strong { display: block; color: var(--ink); opacity: .6; }
-.future small { font-size: 14px; }
-.future-icon { font-size: 24px; filter: grayscale(.4); }
-.future .tile-badge { top: -9px; right: 12px; background: var(--paper); }
 .modal-title.small { font-size: 30px; }
+
+.link {
+  display: block; margin: 22px auto 0; padding: 4px;
+  background: none; border: 0; cursor: pointer;
+  font: 14px/1.4 var(--serif); font-style: italic; color: var(--muted);
+  text-decoration: underline; text-underline-offset: 3px; text-decoration-color: var(--line);
+}
+.link:hover { color: var(--ink); }

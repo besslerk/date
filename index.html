@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=14">
+  <link rel="stylesheet" href="style.css?v=15">
 </head>
 <body>
   <main class="sheet" id="app">
@@ -45,6 +45,37 @@
         <button class="btn primary" data-next>Ladung annehmen</button>
       </div>
       <p class="mono fine" id="objection-msg" hidden></p>
+      <button class="link" type="button" id="not-yet">Lieber erst noch ein bisschen schreiben</button>
+    </section>
+
+    <!-- ============ AUSSETZUNG (freundliches Nein) ============ -->
+    <section class="aside" data-aside="later">
+      <p class="mono kicker">Antrag auf Aussetzung</p>
+      <h1>Völlig okay.</h1>
+      <p class="lead">Das Verfahren wird ausgesetzt, nicht eingestellt. Wir schreiben einfach noch ein bisschen weiter, ganz ohne Druck.</p>
+
+      <label class="field">
+        <span class="mono label">Möchtest du noch was dazu sagen? (optional)</span>
+        <textarea id="later-note" rows="3" placeholder="Muss nicht sein."></textarea>
+      </label>
+
+      <div class="actions">
+        <button class="btn ghost" type="button" id="later-back">Doch zur Ladung</button>
+        <button class="btn primary" type="button" id="later-send">Aussetzung beantragen</button>
+      </div>
+    </section>
+
+    <section class="aside" data-aside="later-done">
+      <p class="mono kicker">Beschluss</p>
+      <h1>Verfahren ausgesetzt.</h1>
+      <p class="lead">Danke, dass du ehrlich bist. Partei A freut sich auf die nächste Nachricht.</p>
+      <p class="muted">Die Ladung bleibt gültig. Du kannst jederzeit hierher zurückkommen.</p>
+      <div class="fallback" id="later-fallback" hidden>
+        <p><strong>Kleiner Formfehler:</strong> Die Zustellung hat nicht geklappt. Schreib mir einfach direkt, das ist eh der bessere Kanal.</p>
+      </div>
+      <div class="actions">
+        <button class="btn ghost" type="button" id="later-restart">Zurück zur Ladung</button>
+      </div>
     </section>
 
     <!-- ============ 1 · STIL ============ -->
@@ -175,12 +206,6 @@
         <input type="text" id="when" placeholder="z.&nbsp;B. jedes Wochenende im Dezember">
       </label>
 
-      <button class="future" type="button" id="future">
-        <span class="tile-badge mono">Future Feature</span>
-        <span class="future-icon">🔒</span>
-        <span><strong>Regelmäßige Datenight einstellen</strong><small>Wird nach erfolgreichem Ersttermin freigeschaltet.</small></span>
-      </button>
-
       <label class="field">
         <span class="mono label">Sonstige Anmerkungen zu Protokoll</span>
         <textarea id="notes" rows="3" placeholder="Allergien, Dealbreaker, Lieblingsessen …"></textarea>
@@ -233,6 +258,6 @@
     </div>
   </div>
 
-  <script src="app.js?v=14"></script>
+  <script src="app.js?v=15"></script>
 </body>
 </html>

@@ -123,7 +123,6 @@ const PROGRAM = {
         { text: "Schlendern durch den Wildpark" },
         { text: "Auf die süßen Wildkatzen (alternativ die Otter) zeigen und „du“ sagen" },
         { text: "Abendessen im Seehaus" },
-        { text: "(Optional) An der Hochschule kurz einem gewissen Professor ans Büro pinkeln" },
       ],
     },
     {
@@ -240,7 +239,14 @@ const state = {
 };
 
 /* ---------- Navigation ---------- */
+function showAside(name) {
+  steps.forEach((s) => s.classList.remove("active"));
+  $$(".aside").forEach((a) => a.classList.toggle("active", a.dataset.aside === name));
+  $("#folio").textContent = "Aussetzung";
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
 function go(index) {
+  $$(".aside").forEach((a) => a.classList.remove("active"));
   state.step = Math.max(0, Math.min(steps.length - 1, index));
   steps.forEach((s, i) => s.classList.toggle("active", i === state.step));
   const total = steps.length - 1;
@@ -283,10 +289,6 @@ function openModal(face, title = "?", text = "") {
   $("#modal").hidden = false;
   $("#modal-close").focus();
 }
-$("#future").addEventListener("click", () => {
-  state.futureClicks = (state.futureClicks || 0) + 1;
-  openModal("⏳", "Geduld.", "Erst das Kennenlernen, dann die Routine.");
-});
 function closeModal() { $("#modal").hidden = true; }
 $("#modal-close").addEventListener("click", closeModal);
 $("#modal").addEventListener("click", (e) => { if (e.target.id === "modal") closeModal(); });
@@ -500,7 +502,6 @@ function collect() {
   data["Anmerkungen"] = v("#notes") || "–";
   data["Einsprüche eingelegt"] = String(objectionCount);
   data["Low Effort angeklickt"] = `${faceIndex}x`;
-  data["Datenight-Feature angeklickt"] = `${state.futureClicks || 0}x`;
   return data;
 }
 function renderSummary() {
@@ -542,33 +543,27 @@ function asText(data) {
   return Object.entries(data).map(([k, v]) => `${k}: ${v}`).join("\n");
 }
 
+async function send(subject, data) {
+  if (!CONFIG.formsubmitTarget) return false;
+  try {
+    const res = await fetch(`https://formsubmit.co/ajax/${encodeURIComponent(CONFIG.formsubmitTarget)}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Accept: "application/json" },
+      body: JSON.stringify({ _subject: subject, _template: "table", _captcha: "false", ...data }),
+    });
+    const json = await res.json().catch(() => ({}));
+    return res.ok && String(json.success) !== "false";
+  } catch (_) {
+    return false;
+  }
+}
+
 $("#submit").addEventListener("click", async () => {
   const btn = $("#submit");
-  const err = $("#submit-error");
   const data = collect();
   btn.disabled = true;
   btn.textContent = "Wird zugestellt …";
-  err.hidden = true;
-
-  let delivered = false;
-  if (CONFIG.formsubmitTarget) {
-    try {
-      const res = await fetch(`https://formsubmit.co/ajax/${encodeURIComponent(CONFIG.formsubmitTarget)}`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json", Accept: "application/json" },
-        body: JSON.stringify({
-          _subject: "📜 Az. EV-2026/001 – Antwort von Partei B",
-          _template: "table",
-          _captcha: "false",
-          ...data,
-        }),
-      });
-      const json = await res.json().catch(() => ({}));
-      delivered = res.ok && String(json.success) !== "false";
-    } catch (_) {
-      delivered = false;
-    }
-  }
+  const delivered = await send("📜 Az. EV-2026/001 – Antwort von Partei B", data);
 
   if (!delivered) {
     const text = asText(data);
@@ -578,6 +573,29 @@ $("#submit").addEventListener("click", async () => {
       `mailto:${CONFIG.fallbackMail}?subject=${encodeURIComponent("Az. EV-2026/001 – Antwort")}&body=${encodeURIComponent(text)}`;
   }
   go(steps.length - 1);
+});
+
+/* ---------- Aussetzung (freundliches Nein) ---------- */
+$("#not-yet").addEventListener("click", () => showAside("later"));
+$("#later-back").addEventListener("click", () => go(0));
+$("#later-restart").addEventListener("click", () => go(0));
+let laterSent = false;
+$("#later-send").addEventListener("click", async () => {
+  const btn = $("#later-send");
+  if (!laterSent) {
+    btn.disabled = true;
+    btn.textContent = "Wird zugestellt …";
+    const delivered = await send("📜 Az. EV-2026/001 – Aussetzung beantragt", {
+      Antwort: "Lieber erst noch ein bisschen schreiben",
+      Anmerkung: $("#later-note").value.trim() || "–",
+      "Einsprüche eingelegt": String(objectionCount),
+    });
+    laterSent = delivered;
+    $("#later-fallback").hidden = delivered;
+    btn.disabled = false;
+    btn.textContent = "Aussetzung beantragen";
+  }
+  showAside("later-done");
 });
 
 $("#copy").addEventListener("click", async () => {
