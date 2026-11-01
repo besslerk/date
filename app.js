@@ -150,7 +150,6 @@ const PROGRAM = {
       id: "mid-classic",
       title: "Classic",
       where: "Karlsruhe oder Stuttgart",
-      tag: "Chef's Choice",
       steps: [
         { text: "Schlendern durch die Stadt bzw. Shopping auf der Königstraße (Stuttgart)" },
         { text: "Stop bei Thalia für ein Buch (Liebe geht durch das Hardcover)" },
@@ -185,6 +184,7 @@ const PROGRAM = {
       id: "mid-dino",
       title: "Dinos & Dinner",
       where: "Stuttgart",
+      teaser: "Wer den Dino nicht ehrt, ist das Erdöl nicht wert.",
       steps: [
         { text: "Naturkundemuseum am Löwentor, weil ich Dinos mag 🦕" },
         { text: "Anschließend findet sich ein gemütlicher Spot in der Stadt für Dinner" },
