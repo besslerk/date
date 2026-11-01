@@ -255,11 +255,10 @@ function renderProgram() {
     renderedFor = sig;
   }
   const custom = state.location === "other";
-  const min = custom ? 2 : MIN_DATE_PICKS;
   $("#program-title").textContent = custom ? "Programmpunkte" : "Datevorschläge";
   $("#program-hint").textContent = custom
     ? `Trag mindestens zwei ein. Ort: ${locationText()}`
-    : `Kreuz an, was dir gefällt (mindestens ${min === 1 ? "einer" : min}). Ort: ${locationText()}`;
+    : `Kreuz an, was dir gefällt. Ort: ${locationText()}`;
   $("#program-preset").hidden = custom;
   $("#program-custom").hidden = !custom;
   state.dealWithIt = false;
@@ -376,7 +375,8 @@ function updateProgramCount() {
   const n = programCount();
   const custom = state.location === "other";
   const min = custom ? 2 : MIN_DATE_PICKS;
-  $("#program-count").textContent = `${n} von mind. ${min} ${custom ? "eingetragen" : "gewählt"}`;
+  $("#program-count").textContent = `${n} von mind. ${min} eingetragen`;
+  $("#program-count").hidden = !custom;
   $("#program-next").disabled = n < min;
 }
 $("#program-own").addEventListener("input", updateProgramCount);
