@@ -95,12 +95,17 @@ const PROGRAM = {
       title: "Cozy",
       tag: "Ideal für ein Follow-up-Date",
       steps: [
-        { text: "Vorab-Lektüre: das Buch wird rechtzeitig bereitgestellt" },
+        { text: "Vorab-Lektüre: „Sunrise on the Reaping“ (dt. „Der Tag bricht an“), Sprache nach Wahl, wird rechtzeitig bereitgestellt" },
         { text: "Der neue Tribute-von-Panem-Film im Kino" },
         { text: "Gemeinsam kochen (Gericht nach Wahl) oder Essen bestellen" },
         { text: "Dabei: Analyse der Unterschiede zwischen Buch und Film" },
       ],
       choices: [
+        {
+          id: "lang",
+          label: "Lektüre-Sprache",
+          options: ["Deutsch", "Englisch"],
+        },
         {
           id: "food",
           label: "Essen",
@@ -112,16 +117,6 @@ const PROGRAM = {
   ],
   pforzheim: [
     {
-      id: "pf-flucht",
-      title: "Flüchten",
-      teaser: "Wir entscheiden uns gegen Pforzheim und gehen irgendwo hin. Hauptsache nicht Pforzheim.",
-      steps: [
-        { text: "Treffen in Pforzheim" },
-        { text: "Zügiges Verlassen von Pforzheim" },
-        { text: "Programm wird on the go erstellt (ich weiß, das ist langweilig, aber Pforzheim isses einfach nicht)" },
-      ],
-    },
-    {
       id: "pf-wildpark",
       title: "Wildpark into Seehaus",
       steps: [
@@ -131,7 +126,25 @@ const PROGRAM = {
         { text: "(Optional) An der Hochschule kurz einem gewissen Professor ans Büro pinkeln" },
       ],
     },
-    placeholder("pf-classic", "Classic", "Chef's Choice"),
+    {
+      id: "pf-light",
+      title: "Date Light",
+      steps: [
+        { text: "Karaoke bei Kenny mit der Gang" },
+        { text: "Wir beginnen mit „Griechischer Wein“, danach ist mir eigentlich alles egal" },
+        { text: "Wir singen immer flirtigere Lieder, mit dem Ziel, dass es dem anderen so unangenehm wie möglich ist" },
+      ],
+    },
+    {
+      id: "pf-flucht",
+      title: "Flüchten",
+      teaser: "Wir entscheiden uns gegen Pforzheim und gehen irgendwo hin. Hauptsache nicht Pforzheim.",
+      steps: [
+        { text: "Treffen in Pforzheim" },
+        { text: "Zügiges Verlassen von Pforzheim" },
+        { text: "Programm wird on the go erstellt (ich weiß, das ist langweilig, aber Pforzheim isses einfach nicht)" },
+      ],
+    },
   ],
   middle: [
     {
