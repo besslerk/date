@@ -271,7 +271,29 @@ textarea:focus { border-color: var(--accent); }
 .proposal .city { font-style: normal; font-size: 11px; text-transform: uppercase; color: var(--accent); letter-spacing: .06em; }
 .proposal strong { font-size: 19px; }
 .timeline { list-style: none; margin: 10px 0 2px; padding: 0 0 0 2px; border-left: 1.5px solid var(--line); }
-.timeline li { position: relative; display: grid; grid-template-columns: 56px 1fr; gap: 8px; padding: 3px 0 3px 14px; font-size: 15px; }
+.timeline li { position: relative; display: block; padding: 3px 0 3px 14px; font-size: 15px; }
 .timeline li::before { content: ""; position: absolute; left: -5px; top: 11px; width: 8px; height: 8px; border-radius: 50%; background: var(--paper); border: 1.5px solid var(--muted); }
 .timeline .time { font-size: 12px; color: var(--muted); padding-top: 2px; }
 .proposal input:checked + span .timeline li::before { border-color: var(--accent); background: var(--accent-soft); }
+
+.timeline li.timed { display: grid; grid-template-columns: 56px 1fr; gap: 8px; }
+.proposal .tag {
+  align-self: flex-start; margin-top: 2px;
+  font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .05em;
+  color: var(--accent); background: var(--accent-soft); border-radius: 4px; padding: 2px 6px;
+}
+.choices {
+  margin: -4px 0 0; padding: 14px 16px 6px;
+  border: 1.5px solid var(--accent); border-top: 0;
+  border-radius: 0 0 var(--radius) var(--radius);
+  background: #fffdf8;
+  animation: in .25s ease both;
+}
+.proposal-wrap:has(.choices:not([hidden])) .option > span { border-radius: var(--radius) var(--radius) 0 0; }
+.choice { margin-bottom: 12px; }
+.choice .segmented { margin-top: 0; }
+.choice .segmented span { padding: 6px 12px; font-size: 13px; }
+.choice input[type="text"] { margin-top: 10px; font-size: 16px; }
+.proposal-wrap { display: flex; flex-direction: column; }
+.proposal-wrap .option > span { min-height: 0; }
+.choices[hidden] { display: none; }

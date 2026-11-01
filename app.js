@@ -24,11 +24,15 @@ const CONFIG = {
    {
      id: "ma-1",                      // eindeutig
      title: "Kunst & Pasta",          // Name des Vorschlags
+     tag: "Chef's Choice",            // optional, kleines Label
      teaser: "Kurze Beschreibung",    // optional
-     steps: [                         // der Ablauf
+     steps: [                         // der Ablauf (time optional)
        { time: "17:00", text: "Kunsthalle" },
-       { time: "19:00", text: "Essen bei …" },
-       { time: "21:00", text: "Drinks bei …" },
+       { text: "Essen bei …" },
+     ],
+     choices: [                       // optional, erscheint beim Ankreuzen
+       { id: "dinner", label: "Dinner",
+         options: ["A", "B"], other: "Freitext-Platzhalter" },
      ],
    }
 
@@ -52,7 +56,63 @@ function placeholder(prefix) {
 }
 
 const PROGRAM = {
-  mannheim: placeholder("ma"),
+  mannheim: [
+    {
+      id: "ma-classic",
+      title: "Classic",
+      tag: "Chef's Choice",
+      steps: [
+        { text: "Schlendern durch die Stadt, ggf. ein wenig Shopping" },
+        { text: "Stop bei Thalia für ein Buch (Liebe geht durch das Hardcover)" },
+        { text: "Danach aufwärmen im Thalia-Café oder Dinner" },
+      ],
+      choices: [
+        {
+          id: "dinner",
+          label: "Aufwärmen / Dinner",
+          options: ["Thalia-Café", "Pizzeria Papi", "Saigon District (Sushi)"],
+          other: "Oder eigene kulinarische Richtung …",
+        },
+      ],
+    },
+    {
+      id: "ma-park",
+      title: "Park & Kultur",
+      teaser: "Abhängig vom Wetter",
+      steps: [
+        { text: "Schlendern durch den Luisenpark, inklusive Pinguine und Tropenhäuser" },
+        { text: "Bei gutem Wetter ein kleines Picknick, sonst ins Chinesische Teehaus" },
+        { text: "Alternativ: Kunsthalle oder Technoseum" },
+        { text: "Anschließend findet sich ein gemütlicher Spot in der Stadt" },
+      ],
+      choices: [
+        {
+          id: "culture",
+          label: "Falls Kultur statt Park",
+          options: ["Kunsthalle", "Technoseum", "Egal"],
+        },
+      ],
+    },
+    {
+      id: "ma-cozy",
+      title: "Cozy",
+      tag: "Ideal für ein Follow-up-Date",
+      steps: [
+        { text: "Vorab-Lektüre: das Buch wird rechtzeitig bereitgestellt" },
+        { text: "Der neue Tribute-von-Panem-Film im Kino" },
+        { text: "Gemeinsam kochen (Gericht nach Wahl) oder Essen bestellen" },
+        { text: "Dabei: Analyse der Unterschiede zwischen Buch und Film" },
+      ],
+      choices: [
+        {
+          id: "food",
+          label: "Essen",
+          options: ["Gemeinsam kochen", "Bestellen"],
+          other: "Gericht nach Wahl …",
+        },
+      ],
+    },
+  ],
   pforzheim: placeholder("pf"),
   karlsruhe: placeholder("ka"),
   stuttgart: placeholder("s"),
@@ -96,6 +156,7 @@ const state = {
   location: null,
   middle: null,
   program: new Set(),
+  choices: {},
   dates: new Set(),
 };
 
@@ -207,37 +268,85 @@ function renderProgram() {
   const list = $("#program-list");
   list.innerHTML = "";
   keys.forEach((key) => {
-    (PROGRAM[key] || []).forEach((item) => {
-      const label = document.createElement("label");
-      label.className = "option proposal" + (item.placeholder ? " placeholder" : "");
-      label.innerHTML = `
-        <input type="checkbox">
-        <span><em class="mono city"></em><strong></strong><small></small><ol class="timeline"></ol></span>`;
-      const city = label.querySelector(".city");
-      if (keys.length > 1) city.textContent = LABELS.location[key];
-      else city.remove();
-      label.querySelector("strong").textContent = item.title;
-      const teaser = label.querySelector("small");
-      if (item.teaser) teaser.textContent = item.teaser;
-      else teaser.remove();
-      const ol = label.querySelector("ol");
-      (item.steps || []).forEach((st) => {
-        const li = document.createElement("li");
-        li.innerHTML = `<span class="mono time"></span><span></span>`;
-        li.firstChild.textContent = st.time || "";
-        li.lastChild.textContent = st.text;
-        ol.appendChild(li);
-      });
-      const cb = label.querySelector("input");
-      cb.checked = state.program.has(item.id);
-      cb.addEventListener("change", () => {
-        cb.checked ? state.program.add(item.id) : state.program.delete(item.id);
-        updateProgramCount();
-      });
-      list.appendChild(label);
-    });
+    (PROGRAM[key] || []).forEach((item) => list.appendChild(renderProposal(item, keys.length > 1 ? key : null)));
   });
   updateProgramCount();
+}
+
+function renderProposal(item, cityKey) {
+  const wrap = document.createElement("div");
+  wrap.className = "proposal-wrap";
+  const label = document.createElement("label");
+  label.className = "option proposal" + (item.placeholder ? " placeholder" : "");
+  label.innerHTML = `
+    <input type="checkbox">
+    <span><em class="mono city"></em><strong></strong><b class="mono tag"></b><small></small><ol class="timeline"></ol></span>`;
+  const fill = (sel, text) => {
+    const el = label.querySelector(sel);
+    text ? (el.textContent = text) : el.remove();
+  };
+  fill(".city", cityKey && LABELS.location[cityKey]);
+  fill("strong", item.title);
+  fill(".tag", item.tag);
+  fill("small", item.teaser);
+  const ol = label.querySelector("ol");
+  (item.steps || []).forEach((st) => {
+    const li = document.createElement("li");
+    if (st.time) {
+      li.className = "timed";
+      const t = document.createElement("span");
+      t.className = "mono time";
+      t.textContent = st.time;
+      li.appendChild(t);
+    }
+    const tx = document.createElement("span");
+    tx.textContent = st.text;
+    li.appendChild(tx);
+    ol.appendChild(li);
+  });
+  wrap.appendChild(label);
+
+  const choicesBox = document.createElement("div");
+  choicesBox.className = "choices";
+  const saved = (state.choices[item.id] ||= {});
+  (item.choices || []).forEach((c) => {
+    const box = document.createElement("div");
+    box.className = "choice";
+    box.innerHTML = `<span class="mono label"></span><div class="segmented"></div>`;
+    box.querySelector(".label").textContent = c.label;
+    const seg = box.querySelector(".segmented");
+    const cur = (saved[c.id] ||= { option: "", text: "" });
+    (c.options || []).forEach((opt) => {
+      const l = document.createElement("label");
+      l.innerHTML = `<input type="radio"><span></span>`;
+      const r = l.querySelector("input");
+      r.name = `${item.id}-${c.id}`;
+      r.checked = cur.option === opt;
+      r.addEventListener("change", () => (cur.option = opt));
+      l.querySelector("span").textContent = opt;
+      seg.appendChild(l);
+    });
+    if (c.other) {
+      const inp = document.createElement("input");
+      inp.type = "text";
+      inp.placeholder = c.other;
+      inp.value = cur.text;
+      inp.addEventListener("input", () => (cur.text = inp.value));
+      box.appendChild(inp);
+    }
+    choicesBox.appendChild(box);
+  });
+
+  const cb = label.querySelector("input");
+  cb.checked = state.program.has(item.id);
+  choicesBox.hidden = !cb.checked || !item.choices?.length;
+  cb.addEventListener("change", () => {
+    cb.checked ? state.program.add(item.id) : state.program.delete(item.id);
+    choicesBox.hidden = !cb.checked || !item.choices?.length;
+    updateProgramCount();
+  });
+  wrap.appendChild(choicesBox);
+  return wrap;
 }
 function customValues() {
   return $$("#custom-fields input").map((i) => i.value.trim()).filter(Boolean);
@@ -276,14 +385,24 @@ function programTitles() {
   if (state.location === "other") {
     return state.dealWithIt ? ["Planung ist deine Sache, deal with it 😎"] : customValues();
   }
-  const all = Object.entries(PROGRAM).flatMap(([city, items]) =>
-    items.map((i) => ({ ...i, city }))
+  const titles = Object.entries(PROGRAM).flatMap(([city, items]) =>
+    items
+      .filter((i) => state.program.has(i.id))
+      .map((i) => {
+        let t = `${i.title} (${LABELS.location[city]})`;
+        const extras = (i.choices || [])
+          .map((c) => {
+            const v = state.choices[i.id]?.[c.id] || {};
+            const parts = [v.option, v.text.trim()].filter(Boolean);
+            return parts.length ? `${c.label}: ${parts.join(", ")}` : "";
+          })
+          .filter(Boolean);
+        if (extras.length) t += ` [${extras.join("; ")}]`;
+        return t;
+      })
   );
-  const titles = all
-    .filter((i) => state.program.has(i.id))
-    .map((i) => (LABELS.location[i.city] ? `${i.title} (${LABELS.location[i.city]})` : i.title));
   const own = $("#program-own").value.trim();
-  if (own) titles.push(`Eigener Vorschlag: ${own}`);
+  if (own) titles.push(`Eigene Idee: ${own}`);
   return titles;
 }
 
